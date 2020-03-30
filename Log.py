@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 import sys
+import os
 
 log_opts = { 'log': False,
              'err': True,
@@ -28,22 +29,26 @@ def _conc(*msg, suffix = None):
 
 def dbg(*msg, suffix = 'DBG:'):
     if log_opts['dbg']:
-        sys.stdout.write('%s\n' % _conc(*msg, suffix = suffix))
+        sys.stdout.write('%s%s' % (_conc(*msg, suffix = suffix),
+                                   os.linesep))
 
 
 def err(*msg, suffix = 'ERR:'):
     if log_opts['err']:
-        sys.stderr.write('%s\n' % _conc(*msg, suffix = suffix))
+        sys.stderr.write('%s%s' % (_conc(*msg, suffix = suffix),
+                                   os.linesep))
 
         
 def warn(*msg, suffix = 'WARN:'):
     if log_opts['warn']:
-        sys.stdout.write('%s\n' % _conc(*msg, suffix = suffix))
+        sys.stdout.write('%s%s' % (_conc(*msg, suffix = suffix),
+                                   os.linesep))
 
         
 def log(*msg, suffix = 'LOG:'):
     if log_opts['log']:
-        sys.stdout.write('%s\n' % _conc(*msg, suffix = suffix))
+        sys.stdout.write('%s%s' % (_conc(*msg, suffix = suffix),
+                                   os.linesep))
 
     
 def _set_lvl(key, bool):
@@ -82,7 +87,7 @@ if __name__ == '__main__':
 
         test_dir = os.path.join(os.getcwd())
         
-        def _write_script(self, fname, string): 
+        def _write_script(self, fname, string):
             full_p = os.path.join(self.test_dir, fname)
             if os.path.exists(full_p):
                 try:
@@ -121,19 +126,19 @@ if __name__ == '__main__':
 
         def _test_func(self, func):
             test_f = os.path.join(self.test_dir, 'test_'+ func + '.py')
-            s = ('#!/usr/bin/python3\n'
-                 'from Log import *\n'
-                 'set_' + func + '_lvl(True)\n' + func + '(\"prat\") \n' 
-                 )
+            s = '#!/usr/bin/python3' + os.linesep \
+            + 'from Log import *' + os.linesep \
+            + 'set_' + func + '_lvl(True)' + os.linesep \
+            + func + '(\"prat\") ' + os.linesep
             self._write_script(test_f, s)
             out = self._get_script_output(test_f)
             self.assertTrue(out[0] == func.upper() + ': prat')
             os.unlink(test_f)
             test_f = os.path.join(self.test_dir, 'test_' + func+ '.py')
-            s = ('#!/usr/bin/python3\n'
-                 'from Log import *\n'
-                 'set_' + func + '_lvl(False)\n' + func + '(\"prat\") \n' 
-                 )
+            s = '#!/usr/bin/python3' + os.linesep \
+                + 'from Log import *' + os.linesep \
+                + 'set_' + func + '_lvl(False)' + os.linesep \
+                + func + '(\"prat\")' + os.linesep
             self._write_script(test_f, s)
             out = self._get_script_output(test_f)
             self.assertTrue(out[0] == '')

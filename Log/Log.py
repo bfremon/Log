@@ -82,6 +82,7 @@ if __name__ == '__main__':
     import os
     import stat
     import Cmd
+    import pandas
     
     class test_Log(unittest.TestCase):
 
@@ -123,7 +124,7 @@ if __name__ == '__main__':
             s = _conc('prt', 'per', 'pr', suffix=True)
             self.assertTrue(s == 'True prt per pr')
 
-
+            
         def _test_func(self, func):
             test_f = os.path.join(self.test_dir, 'test_'+ func + '.py')
             s = '#!/usr/bin/python3' + os.linesep \

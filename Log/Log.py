@@ -9,45 +9,55 @@ log_opts = { 'log': False,
              'dbg': True
 }
 
-
-def _conc(*msg, suffix = None):
+def _add_suffix2line(msg, prefix=None):
     ret = ''
-    if suffix:
-        ret = str(suffix) + ' '
-    if len(msg) == 1:
-        ret += str(msg[0])
-    else:
-        idx = 0
-        for t in msg:
-            if idx < len(msg) - 1:
-                ret += str(t) + ' '
+    if '\n' in str(msg):
+        line_cnt = 0
+        for line in str(msg).split(os.linesep):
+            if line_cnt == 0:
+                ret += line + '\n'
             else:
-                ret += str(t)
-            idx += 1
+                ret += str(prefix) + ' ' + line + '\n'
+            line_cnt += 1
+    else:
+        ret = msg + ' '
     return ret
 
 
-def dbg(*msg, suffix = 'DBG:'):
+def _conc(*msg, prefix = None):
+    ret = ''
+    if prefix:
+        ret = str(prefix) + ' '
+    for t in msg:
+        ret += _add_suffix2line(t, prefix=prefix)
+    # stripping last space
+    ret = ret[:-1]
+    return ret
+
+
+def dbg(*msg, prefix = 'DBG:'):
+    '''
+    Output *msg to stdout if dbg is set to True
+    '''
     if log_opts['dbg']:
-        sys.stdout.write('%s%s' % (_conc(*msg, suffix = suffix),
+        sys.stdout.write('%s%s' % (_conc(*msg, prefix = prefix),
                                    os.linesep))
 
 
-def err(*msg, suffix = 'ERR:'):
+def err(*msg, prefix = 'ERR:'):
     if log_opts['err']:
-        sys.stderr.write('%s%s' % (_conc(*msg, suffix = suffix),
+        sys.stderr.write('%s%s' % (_conc(*msg, prefix = prefix),
                                    os.linesep))
-
         
-def warn(*msg, suffix = 'WARN:'):
+def warn(*msg, prefix = 'WARN:'):
     if log_opts['warn']:
-        sys.stdout.write('%s%s' % (_conc(*msg, suffix = suffix),
+        sys.stdout.write('%s%s' % (_conc(*msg, prefix = prefix),
                                    os.linesep))
 
         
-def log(*msg, suffix = 'LOG:'):
+def log(*msg, prefix = 'LOG:'):
     if log_opts['log']:
-        sys.stdout.write('%s%s' % (_conc(*msg, suffix = suffix),
+        sys.stdout.write('%s%s' % (_conc(*msg, prefix = prefix),
                                    os.linesep))
 
     
@@ -115,15 +125,22 @@ if __name__ == '__main__':
 
 
         def test__conc(self):
-            s = _conc('prt', suffix=None)
+            s = _conc('prt', prefix=None)
             self.assertTrue(s == 'prt')
-            s = _conc('prt', suffix='PRT:')
+            s = _conc('prt', prefix='PRT:')
             self.assertTrue(s == 'PRT: prt')
-            s = _conc('prt', suffix=True)
+            s = _conc('prt', prefix=True)
             self.assertTrue(s == 'True prt')
-            s = _conc('prt', 'per', 'pr', suffix=True)
+            s = _conc('prt', 'per', 'pr', prefix=True)
             self.assertTrue(s == 'True prt per pr')
-
+            df = pandas.DataFrame({'a': [1, 2, 3], 'b': [4, 5, 6],
+                                   'c': [7, 8, 9]})
+            s = _conc(df.head(), prefix = 'LOG:')
+            str_df = ''
+            for l in str(df).split('\n'):
+                str_df += 'LOG: ' + l + '\n'
+            self.assertTrue(str_df[:-1] == s)
+            
             
         def _test_func(self, func):
             test_f = os.path.join(self.test_dir, 'test_'+ func + '.py')

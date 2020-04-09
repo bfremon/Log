@@ -37,7 +37,8 @@ def _conc(*msg, prefix = None):
 
 def dbg(*msg, prefix = 'DBG:'):
     '''
-    Output *msg to stdout if dbg is set to True
+    Write *msg to stdout if debugging is 
+    activated (default) through set_dbg_lvl()
     '''
     if log_opts['dbg']:
         sys.stdout.write('%s%s' % (_conc(*msg, prefix = prefix),
@@ -45,17 +46,29 @@ def dbg(*msg, prefix = 'DBG:'):
 
 
 def err(*msg, prefix = 'ERR:'):
+    '''
+    Write *msg to stderr if error messaging is
+    activated (default) through set_err_lvl()
+    '''
     if log_opts['err']:
         sys.stderr.write('%s%s' % (_conc(*msg, prefix = prefix),
                                    os.linesep))
         
 def warn(*msg, prefix = 'WARN:'):
+    '''
+    Write *msg to stdout if warning is 
+    activated (default) through set_warn_lvl()
+    '''
     if log_opts['warn']:
         sys.stdout.write('%s%s' % (_conc(*msg, prefix = prefix),
                                    os.linesep))
 
         
 def log(*msg, prefix = 'LOG:'):
+    '''
+    Write *msg to stdout if logging is 
+    activated (not by default) through set_log_lvl()
+    '''
     if log_opts['log']:
         sys.stdout.write('%s%s' % (_conc(*msg, prefix = prefix),
                                    os.linesep))
@@ -72,17 +85,29 @@ def _set_lvl(key, bool):
 
 
 def set_log_lvl(bool):
+    '''
+    Activate logging info by setting bool to True
+    '''
     _set_lvl('log', bool)
     
 
 def set_dbg_lvl(bool):
+    '''
+    Activate debugging info by setting bool to True
+    '''
     _set_lvl('dbg', bool)
 
     
 def set_err_lvl(bool):
+    '''
+    Activate error info by setting bool to True
+    '''
     _set_lvl('err', bool)
 
 
 def set_warn_lvl(bool):
+    '''
+    Activate warning info by setting bool to True
+    '''
     _set_lvl('warn', bool)
 

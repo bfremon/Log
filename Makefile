@@ -1,8 +1,15 @@
 python3 = /usr/bin/python3
-
-.PHONY: all
+rm = /bin/rm -fr
+pip = /usr/local/bin/pip
 
 test:
-	for f in *.py;  do echo '\nTesting '$$f; $(python3) $$f; done
+	$(python3) -m unittest discover
 
-install:
+pip: README.md setup.py .VERSION LICENCE Log/__init__.py 
+	$(python3) ./setup.py --set-build
+	$(pip) install .
+
+clean:
+	$(rm) __pycache__ Log/__pycache__  Log/tests/__pycache__
+
+.PHONY: pip clean test

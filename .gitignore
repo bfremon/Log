@@ -1,5 +1,6 @@
-bench/
 \#*\#
 \.#*
 \.~*
 __pycache__/
+Log/__pycache__/
+.VERSION

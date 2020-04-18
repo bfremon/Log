@@ -53,7 +53,21 @@ class test_Log(unittest.TestCase):
         for l in str(df).split('\n'):
             str_df += 'LOG: ' + l + '\n'
         self.assertTrue(str_df[:-1] == s)
-                
+        tmp_p = os.path.join(os.getcwd(), 'tmp')
+        os.mkdir(tmp_p)
+        tmp1_f_p = os.path.join(tmp_p, 'tmp1')
+        f1_w = open(tmp1_f_p, 'w')
+        f1_w.write('1')
+        f1_w.close()
+        tmp2_f_p = os.path.join(tmp_p, 'tmp2')
+        f2_w = open(tmp2_f_p, 'w')
+        f2_w.write('1')
+        f2_w.close()
+        s = Log._conc('prt', os.listdir(tmp_p))
+        self.assertTrue(s == "prt ['tmp2', 'tmp1']")
+        os.unlink(tmp1_f_p)
+        os.unlink(tmp2_f_p)
+        os.rmdir(tmp_p)
             
     def _test_func(self, func):
         test_f = os.path.join(self.test_dir, 'test_'+ func + '.py')

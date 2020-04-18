@@ -20,7 +20,7 @@ def _add_suffix2line(msg, prefix=None):
                 ret += str(prefix) + ' ' + line + '\n'
             line_cnt += 1
     else:
-        ret = msg + ' '
+        ret = str(msg) + ' '
     return ret
 
 
